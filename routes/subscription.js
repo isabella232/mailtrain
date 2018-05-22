@@ -19,6 +19,7 @@ let cache = require('memory-cache');
 let geoip = require('geoip-ultralight');
 let confirmations = require('../lib/models/confirmations');
 let mailHelpers = require('../lib/subscription-mail-helpers');
+let blacklist = require('../lib/models/blacklist');
 
 let originWhitelist = config.cors && config.cors.origins || [];
 
@@ -792,6 +793,12 @@ function handleUnsubscribe(list, subscription, autoUnsubscribe, campaignId, ip, 
             }
 
             // TODO: Shall we do anything with "found"?
+            
+            blacklist.add(subscription.email, 'unsubscribe', err =>{
+              if (err) {
+                return next(err);
+              }
+            });
 
             mailHelpers.sendUnsubscriptionConfirmed(list, subscription.email, subscription, err => {
                 if (err) {
@@ -813,7 +820,13 @@ function handleUnsubscribe(list, subscription, autoUnsubscribe, campaignId, ip, 
             if (err) {
                 return next(err);
             }
-
+            
+            blacklist.add(subscription.email, 'unsubscribe', (err) =>{
+              if (err) {
+                return next(err);
+              }
+            });
+            
             mailHelpers.sendConfirmUnsubscription(list, subscription.email, confirmCid, subscription, err => {
                 if (err) {
                     return next(err);

@@ -7,6 +7,8 @@ ALTER TABLE `campaigns` ADD COLUMN `open_tracking_disabled` tinyint(4) unsigned 
 UPDATE `campaigns` SET `open_tracking_disabled` = `tracking_disabled`, `click_tracking_disabled` = `tracking_disabled`;
 ALTER TABLE `campaigns` DROP COLUMN `tracking_disabled`;
 
+ALTER TABLE blacklist ADD COLUMN reason enum('api','web','bounce','unsubscribe','complain') NULL DEFAULT NULL;
+
 # Footer section
 LOCK TABLES `settings` WRITE;
 INSERT INTO `settings` (`key`, `value`) VALUES('db_schema_version', @schema_version) ON DUPLICATE KEY UPDATE `value`=@schema_version;

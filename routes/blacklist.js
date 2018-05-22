@@ -45,7 +45,7 @@ router.post('/ajax/', (req, res) => {
 
 router.post('/ajax/add', passport.csrfProtection, (req, res) => {
     let email = req.body.email;
-    blacklist.add(email, (err) => {
+    blacklist.add(email, 'web', (err) => {
         if (err) {
             req.flash('danger', err.message || err);
             return res.redirect(req.body.next);

@@ -457,7 +457,7 @@ router.post('/blacklist/add', (req, res) => {
           data: []
       });
     }
-    blacklist.add(input.EMAIL, (err) =>{
+    blacklist.add(input.EMAIL, 'api', (err) =>{
       if (err) {
           res.status(500);
           return res.json({
